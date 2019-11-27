@@ -12,6 +12,8 @@ pod 'Firebase/Analytics'
 pod 'Firebase/Core'
 pod 'Firebase/Database'
 pod 'Firebase/Auth'
+pod 'SDWebImage/WebP'
+pod 'Firebase/Storage'
 # add pods for any other desired Firebase products
 # https://firebase.google.com/docs/ios/setup#available-pods
 

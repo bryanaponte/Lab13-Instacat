@@ -26,7 +26,7 @@ struct CatInsta {
         key = snapshot.key
         itemRef = snapshot.ref
         
-        let snapshotValue = snapshot.value as? NSCDictionary
+        let snapshotValue = snapshot.value as? NSDictionary
         
         if let imageUrl = snapshotValue?["url"] as? String{
             url = imageUrl
