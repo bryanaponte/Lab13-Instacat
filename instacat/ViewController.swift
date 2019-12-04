@@ -8,10 +8,11 @@
 
 import UIKit
 import Firebase
+import FirebaseStorage
 import FirebaseAuth
 import FirebaseDatabase
-import FirebaseStorage
 import SDWebImage
+
 class ViewController: UIViewController, UICollectionViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate{
     
     
@@ -29,6 +30,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UIImagePicke
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        imagePicker.delegate = self
         
         dbRef = Database.database().reference().child("images")
         loadDB()
@@ -91,7 +94,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UIImagePicke
         return cell
     }
     
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey :  AnyObject]) {
+     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
         dismiss(animated: true, completion: nil)
     
@@ -103,15 +106,23 @@ class ViewController: UIViewController, UICollectionViewDataSource, UIImagePicke
             let imageRef = Storage.storage().reference().child("images/" + randomString(20));
             
             _ = imageRef.putData(data, metadata: nil){ (metadata, error) in
-                guard let metadata = metadata else{
+                guard let metadata = metadata else {
                     return
                 }
                 let downloadURL = metadata.storageReference
-                print(downloadURL)
+                print(downloadURL?.debugDescription as Any)
+                
+                let key = self.dbRef.childByAutoId().key
+                let image = ["url": downloadURL?.debugDescription]
+                
+                let childUpdates = ["/\(key)": image]
+                self.dbRef.updateChildValues(childUpdates)
+                
             }
         }
         
     }
+    
     
     @IBAction func loadImageButtomClicked(_ sender: Any) {
         imagePicker.allowsEditing = false
@@ -133,5 +144,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UIImagePicke
         }
         return  randomString
     }
+    
+    
 }
 
